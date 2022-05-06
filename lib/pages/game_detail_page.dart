@@ -8,6 +8,7 @@ import '../widgets/game_detail/game_info_card.dart';
 import '../widgets/game_detail/set_game_lineup_card.dart';
 import '../widgets/game_detail/set_substitution_card.dart';
 import '../widgets/game_detail/lineup_list.dart';
+
 class GameDetail extends StatefulWidget {
   int? gameId;
 

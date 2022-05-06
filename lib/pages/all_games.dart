@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'game_detail_page.dart';
 import '../helpers/api_services.dart';
 import '../helpers/utils.dart';
+import 'package:table_calendar/table_calendar.dart';
+import './analytics_page.dart';
 
 class AllGames extends StatefulWidget {
   const AllGames({Key? key}) : super(key: key);
@@ -15,24 +17,97 @@ class _AllGamesState extends State<AllGames> {
   List allApiGames = [];
   late DateTime _currentlySelectedDate;
   bool _isLoading = false;
+  var _selectedDate = DateTime.now();
+  var _focusedDay = DateTime.now();
+
+  getGamePerDate(date) async {
+    setState(() {
+      _isLoading = true;
+    });
+    getAllGames(date).then((value) {
+      setState(() {
+        _isLoading = false;
+      });
+      if (value != null) {
+        setState(() {
+          allApiGames = value;
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     setState(() {
       _currentlySelectedDate = DateTime.now();
-      _isLoading = true;
     });
 
-    getAllGames(DateFormat("y-M-d").format(_currentlySelectedDate))
-        .then((value) {
-      if (value != null) {
-        setState(() {
-          allApiGames = value;
-          _isLoading = false;
+    getGamePerDate(DateFormat("y-M-d").format(_currentlySelectedDate));
+  }
+
+  showCalendar() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              content: Container(
+                height: MediaQuery.of(context).size.height * 0.4,
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: TableCalendar(
+                  onDaySelected: (selectedDay, focusedDay) async {
+                    setState(() {
+                      _selectedDate = selectedDay;
+                      _focusedDay = focusedDay;
+                    });
+                    getGamePerDate(DateFormat("y-M-d").format(focusedDay));
+                    await Future.delayed(const Duration(milliseconds: 600), () {
+                      Navigator.pop(context);
+                    });
+                  },
+                  locale: 'en_US',
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime.utc(2090, 3, 14),
+                  focusedDay: _selectedDate,
+                  selectedDayPredicate: (day) {
+                    return isSameDay(day, _focusedDay);
+                  },
+                  calendarStyle: CalendarStyle(
+                      cellMargin: const EdgeInsets.all(2),
+                      selectedDecoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                      todayDecoration: const BoxDecoration(
+                        color: Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
+                      weekendTextStyle: const TextStyle(
+                        color: Colors.white,
+                      )),
+                  headerStyle: const HeaderStyle(
+                    formatButtonVisible: false,
+                    titleCentered: true,
+                  ),
+                  shouldFillViewport: true,
+                  daysOfWeekStyle: const DaysOfWeekStyle(
+                    weekdayStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.0,
+                    ),
+                    weekendStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.0,
+                    ),
+                  ),
+                  rowHeight: 30,
+                ),
+              ),
+            );
+          });
         });
-      }
-    });
   }
 
   Widget dateRow() {
@@ -46,19 +121,11 @@ class _AllGamesState extends State<AllGames> {
             _currentlySelectedDate = date;
             _isLoading = true;
           });
-          getAllGames(DateFormat("y-M-d").format(_currentlySelectedDate))
-              .then((value) {
-            if (value != null) {
-              setState(() {
-                allApiGames = value;
-                _isLoading = false;
-              });
-            }
-          });
+          getGamePerDate(DateFormat("y-M-d").format(_currentlySelectedDate));
         },
         child: Column(
           children: [
-            i == 0
+            isSameDay(date, DateTime.now())
                 ? Text(
                     "Today",
                     style: TextStyle(
@@ -103,6 +170,28 @@ class _AllGamesState extends State<AllGames> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+            backgroundColor: Theme.of(context).backgroundColor,
+            elevation: 0,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: IconButton(
+                  icon: Icon(Icons.calendar_month_outlined,
+                      color: Theme.of(context).primaryColor),
+                  onPressed: () {
+                    showCalendar();
+                    // _insertOverlay(context);
+                  },
+                ),
+              )
+            ],
+            centerTitle: true,
+            title: Text("Hosanalyst",
+                style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor))),
         body: Container(
           // color: Colors.black87,
           child: _isLoading
@@ -113,14 +202,6 @@ class _AllGamesState extends State<AllGames> {
                   children: [
                     const SizedBox(
                       height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15.0),
-                      child: Text("Hosanalyst",
-                          style: TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor)),
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.95,
@@ -208,6 +289,13 @@ class _AllGamesState extends State<AllGames> {
                                     ),
                                   ),
                                 );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) =>
+                                //         Analytics(gameData: allApiGames[index]),
+                                //   ),
+                                // );
                               },
                             ),
                           );

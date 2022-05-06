@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hosanalyst/pages/analytics_page.dart';
 import 'package:hosanalyst/pages/game_view_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './pages/all_games.dart';
@@ -58,7 +59,6 @@ class _MyAppState extends State<MyApp> {
       },
     );
     // var brightness = SchedulerBinding.instance!.window.platformBrightness;
-    
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -100,6 +100,7 @@ class _MyAppState extends State<MyApp> {
       // home: const AllGames(),
       home: SplashScreenView(
         navigateRoute: _hasToken ? const AllGames() : const Signin(),
+        // navigateRoute: const Analytics(),
         duration: 3000,
         imageSize: 250,
         imageSrc: "assets/images/HosanalystLogo.png",

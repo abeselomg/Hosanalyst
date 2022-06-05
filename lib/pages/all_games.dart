@@ -4,7 +4,7 @@ import 'game_detail_page.dart';
 import '../helpers/api_services.dart';
 import '../helpers/utils.dart';
 import 'package:table_calendar/table_calendar.dart';
-import './analytics_page.dart';
+
 
 class AllGames extends StatefulWidget {
   const AllGames({Key? key}) : super(key: key);
@@ -84,8 +84,8 @@ class _AllGamesState extends State<AllGames> {
                         color: Colors.transparent,
                         shape: BoxShape.circle,
                       ),
-                      weekendTextStyle: const TextStyle(
-                        color: Colors.white,
+                      weekendTextStyle: TextStyle(
+                        color: Theme.of(context).accentColor,
                       )),
                   headerStyle: const HeaderStyle(
                     formatButtonVisible: false,
@@ -187,7 +187,7 @@ class _AllGamesState extends State<AllGames> {
               )
             ],
             centerTitle: true,
-            title: Text("Hosanalyst",
+            title: Text("Hossanalyst",
                 style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -289,13 +289,7 @@ class _AllGamesState extends State<AllGames> {
                                     ),
                                   ),
                                 );
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         Analytics(gameData: allApiGames[index]),
-                                //   ),
-                                // );
+                              
                               },
                             ),
                           );

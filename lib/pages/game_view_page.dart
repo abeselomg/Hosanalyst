@@ -54,6 +54,13 @@ class _GameViewPageState extends State<GameViewPage> {
   List items = [2, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   void onActionSubmit(zone, selectedPlayer, selectedAction) {
+    if (selectedAction == "red cards") {
+      print(selectedAction);
+      setState(() {
+        _teamLineup
+            .removeWhere((element) => element["id"] == selectedPlayer["id"]);
+      });
+    }
     setState(() {
       _isLoading = true;
     });

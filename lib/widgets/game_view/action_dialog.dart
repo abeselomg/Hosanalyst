@@ -3,6 +3,33 @@ import './build_shirts.dart';
 import './action_cards.dart';
 import '../../helpers/utils.dart';
 
+// class ActionDialog extends StatelessWidget {
+//   final zone;
+//   final teamLineup;
+//   final selectedPlayer;
+//   final selectedAction;
+//   final selectedActionType;
+//   final firstController;
+//   final isLoading;
+//   final onActionSubmit;
+//   ActionDialog(
+//       {Key? key,
+//       this.zone,
+//       this.firstController,
+//       this.isLoading,
+//       this.onActionSubmit,
+//       this.selectedAction,
+//       this.selectedActionType,
+//       this.selectedPlayer,
+//       this.teamLineup})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return actionDialog();
+//   }
+// }
+
 Future<dynamic> actionDialog(
   context,
   zone,
